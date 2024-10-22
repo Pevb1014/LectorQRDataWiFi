@@ -1,5 +1,8 @@
 const video = document.getElementById('video');
 const output = document.getElementById('output');
+const restartBtn = document.getElementById('restartBtn');
+
+let scanningActive = true; // Variable para controlar si la lectura está activa o no
 
 // Obtener acceso a la cámara
 navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
@@ -16,27 +19,35 @@ video.addEventListener('play', () => {
     const context = canvas.getContext('2d');
 
     function scanQRCode() {
+        if (!scanningActive) {
+            return;  // Si la lectura está pausada, no seguir escaneando
+        }
+
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
+
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
         const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
-        
+
         if (qrCode) {
             // Mostrar los datos del QR
             const qrData = qrCode.data;
             if (qrData.startsWith("WIFI:")) {
                 output.textContent = "Código QR de red Wi-Fi detectado.";
                 extractWifiInfo(qrData);
+                scanningActive = false;  // Pausar la lectura
+                restartBtn.style.display = 'block';  // Mostrar botón de reinicio
             } else {
                 output.textContent = "Código QR detectado, pero no es de una red Wi-Fi.";
             }
         } else {
             output.textContent = "No se ha detectado un código QR.";
         }
-        
-        requestAnimationFrame(scanQRCode);
+
+        if (scanningActive) {
+            requestAnimationFrame(scanQRCode); // Seguir escaneando si está activo
+        }
     }
 
     scanQRCode();
@@ -55,9 +66,16 @@ function extractWifiInfo(qrData) {
     });
 
     output.innerHTML = `
-        <p><strong>SSID (Nombre de la red):</strong> ${wifiInfo['S'] || 'No encontrado'}</p>
-        <p><strong>Encriptación:</strong> ${wifiInfo['T'] || 'No encontrada'}</p>
-        <p><strong>Contraseña:</strong> ${wifiInfo['P'] || 'No encontrada'}</p>
-        <p><strong>Red oculta:</strong> ${wifiInfo['H'] || 'false'}</p>
-    `;
+                <p><strong>SSID (Nombre de la red):</strong> ${wifiInfo['S'] || 'No encontrado'}</p>
+                <p><strong>Encriptación:</strong> ${wifiInfo['T'] || 'No encontrada'}</p>
+                <p><strong>Contraseña:</strong> ${wifiInfo['P'] || 'No encontrada'}</p>
+                <p><strong>Red oculta:</strong> ${wifiInfo['H'] || 'false'}</p>
+            `;
+}
+
+// Función para reiniciar el escaneo
+function restartScanner() {
+    scanningActive = true;
+    restartBtn.style.display = 'none';  // Ocultar el botón de reinicio
+    requestAnimationFrame(scanQRCode);  // Reiniciar el escaneo
 }
