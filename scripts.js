@@ -65,12 +65,7 @@ function extractWifiInfo(qrData) {
         }
     });
 
-    output.innerHTML = `
-                <p><strong>SSID (Nombre de la red):</strong> ${wifiInfo['S'] || 'No encontrado'}</p>
-                <p><strong>Encriptación:</strong> ${wifiInfo['T'] || 'No encontrada'}</p>
-                <p><strong>Contraseña:</strong> ${wifiInfo['P'] || 'No encontrada'}</p>
-                <p><strong>Red oculta:</strong> ${wifiInfo['H'] || 'false'}</p>
-            `;
+    output.textContent = `Nombre de la red: ${wifiInfo['S']} Encriptación: ${wifiInfo['T']} Contraseña: ${wifiInfo['P']}`;
 }
 
 // Función para reiniciar el escaneo
