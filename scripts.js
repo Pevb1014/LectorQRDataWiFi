@@ -18,38 +18,6 @@ video.addEventListener('play', () => {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
 
-    function scanQRCode() {
-        if (!scanningActive) {
-            return;  // Si la lectura está pausada, no seguir escaneando
-        }
-
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
-
-        if (qrCode) {
-            // Mostrar los datos del QR
-            const qrData = qrCode.data;
-            if (qrData.startsWith("WIFI:")) {
-                output.textContent = "Código QR de red Wi-Fi detectado.";
-                extractWifiInfo(qrData);
-                scanningActive = false;  // Pausar la lectura
-                restartBtn.style.display = 'block';  // Mostrar botón de reinicio
-            } else {
-                output.textContent = "Código QR detectado, pero no es de una red Wi-Fi.";
-            }
-        } else {
-            output.textContent = "No se ha detectado un código QR.";
-        }
-
-        if (scanningActive) {
-            requestAnimationFrame(scanQRCode); // Seguir escaneando si está activo
-        }
-    }
-
     scanQRCode();
 });
 
@@ -71,6 +39,38 @@ function extractWifiInfo(qrData) {
 // Función para reiniciar el escaneo
 function restartScanner() {
     scanningActive = true;
-    restartBtn.style.display = 'none';  // Ocultar el botón de reinicio
+    restartBtn.disabled = true;  // Ocultar el botón de reinicio
     requestAnimationFrame(scanQRCode);  // Reiniciar el escaneo
+}
+
+function scanQRCode() {
+    if (!scanningActive) {
+        return;  // Si la lectura está pausada, no seguir escaneando
+    }
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const qrCode = jsQR(imageData.data, canvas.width, canvas.height);
+
+    if (qrCode) {
+        // Mostrar los datos del QR
+        const qrData = qrCode.data;
+        if (qrData.startsWith("WIFI:")) {
+            output.textContent = "Código QR de red Wi-Fi detectado.";
+            extractWifiInfo(qrData);
+            scanningActive = false;  // Pausar la lectura
+            restartBtn.disabled = false;  // Mostrar botón de reinicio
+        } else {
+            output.textContent = "Código QR detectado, pero no es de una red Wi-Fi.";
+        }
+    } else {
+        output.textContent = "No se ha detectado un código QR.";
+    }
+
+    if (scanningActive) {
+        requestAnimationFrame(scanQRCode); // Seguir escaneando si está activo
+    }
 }
