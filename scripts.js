@@ -34,14 +34,14 @@ video.addEventListener('play', () => {
             // Mostrar los datos del QR
             const qrData = qrCode.data;
             if (qrData.startsWith("WIFI:")) {
-                output.textContent = "Código QR de red Wi-Fi detectado.";
+                output.value = "Código QR de red Wi-Fi detectado.";
                 extractWifiInfo(qrData);
                 scanningActive = false;  // Pausar la lectura
             } else {
                 output.textContent = "Código QR detectado, pero no es de una red Wi-Fi.";
             }
         } else {
-            output.textContent = "No se ha detectado un código QR.";
+            output.textContent  = "No se ha detectado un código QR.";
         }
     
         if (scanningActive) {
