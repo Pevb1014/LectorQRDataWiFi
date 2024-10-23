@@ -68,6 +68,7 @@ function extractWifiInfo(qrData) {
 
 // Función para reiniciar el escaneo
 function restartScanner() {
+    alert("Botn de reseteo oprimido");
     scanningActive = true;
     output.textContent = "";
     requestAnimationFrame(scanQRCode);  // Reiniciar el escaneo
