@@ -69,5 +69,6 @@ function extractWifiInfo(qrData) {
 // Función para reiniciar el escaneo
 function restartScanner() {
     scanningActive = true;
+    output.textContent = "";
     requestAnimationFrame(scanQRCode);  // Reiniciar el escaneo
 }
