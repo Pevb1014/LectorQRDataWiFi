@@ -20,6 +20,7 @@ video.addEventListener('play', () => {
     
     function scanQRCode() {
         if (!scanningActive) {
+            alert(`Escaneo activado: ${scanningActive}`);
             return;  // Si la lectura está pausada, no seguir escaneando
         }
     
@@ -34,9 +35,11 @@ video.addEventListener('play', () => {
             // Mostrar los datos del QR
             const qrData = qrCode.data;
             if (qrData.startsWith("WIFI:")) {
-                output.value = "Código QR de red Wi-Fi detectado.";
+                alert(`Escaneo activado: ${scanningActive}`);
+                output.textContent = "Código QR de red Wi-Fi detectado.";
                 extractWifiInfo(qrData);
                 scanningActive = false;  // Pausar la lectura
+                alert(`Escaneo activado: ${scanningActive}`);
             } else {
                 output.textContent = "Código QR detectado, pero no es de una red Wi-Fi.";
             }
@@ -63,13 +66,15 @@ function extractWifiInfo(qrData) {
         }
     });
 
-    output.textContent = `Nombre de la red: ${wifiInfo['S']} Encriptación: ${wifiInfo['T']} Contraseña: ${wifiInfo['P']}`;
+    output.textContent = `Nombre de la red: ${wifiInfo['S']}\nEncriptación: ${wifiInfo['T']} \nContraseña: ${wifiInfo['P']}`;
 }
 
 // Función para reiniciar el escaneo
 function restartScanner() {
     alert("Botn de reseteo oprimido");
+    alert(`Escaneo activado: ${scanningActive}`);
     scanningActive = true;
+    alert(`Escaneo activado: ${scanningActive}`);
     output.textContent = "";
     requestAnimationFrame(scanQRCode);  // Reiniciar el escaneo
 }
