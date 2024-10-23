@@ -2,31 +2,53 @@ const inputQRFile = document.getElementById('InputCamera');
 const processButton = document.getElementById('processButton');
 const outputInfo = document.getElementById('outputInfo');
 
+let processing = false; // Estado de procesamiento
 
-let scanningActive = true; // Variable para controlar si la lectura está activa o no
+// Evento al cambiar el archivo
+inputQRFile.addEventListener('change', () => {
+    outputInfo.textContent = ""; // Limpiar salida
+    if (processing) {
+        processing = false; // Reiniciar el estado si se selecciona un nuevo archivo
+    }
+});
 
-processButton.addEventListener('click', () => {
+processButton.addEventListener('click', async () => {
     const qrFile = inputQRFile.files[0];
+    if (!qrFile) {
+        outputInfo.textContent = "Por favor, selecciona un archivo.";
+        return;
+    }
+
+    if (processing) {
+        outputInfo.textContent = "Por favor, espera a que se procese el QR actual.";
+        return; // Evitar múltiples clics
+    }
+
+    processing = true; // Establecer estado de procesamiento
+    processButton.disabled = true; // Deshabilitar el botón
+
     const reader = new FileReader();
     reader.onload = function(event) {
         let img = new Image();
         img.src = event.target.result;
 
-        img.onload = function (event) {
+        img.onload = function () {
             let canvas = document.createElement('canvas');
-            canvas.style.display = 'none';
             canvas.width = img.width;
             canvas.height = img.height;
             let context = canvas.getContext('2d');
             context.drawImage(img, 0, 0, canvas.width, canvas.height);
             let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             let qrCode = jsQR(imageData.data, canvas.width, canvas.height);
+            
             if (qrCode) {
-
                 outputInfo.textContent = getInfoWiFiQR(qrCode.data);
             } else {
                 outputInfo.textContent = "No se detectó ningún código QR.";
             }
+
+            processing = false; // Resetear estado de procesamiento
+            processButton.disabled = false; // Habilitar el botón
         };
     };
     reader.readAsDataURL(qrFile);
