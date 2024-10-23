@@ -37,7 +37,6 @@ video.addEventListener('play', () => {
                 output.textContent = "Código QR de red Wi-Fi detectado.";
                 extractWifiInfo(qrData);
                 scanningActive = false;  // Pausar la lectura
-                restartBtn.disabled = false;  // Mostrar botón de reinicio
             } else {
                 output.textContent = "Código QR detectado, pero no es de una red Wi-Fi.";
             }
@@ -70,6 +69,5 @@ function extractWifiInfo(qrData) {
 // Función para reiniciar el escaneo
 function restartScanner() {
     scanningActive = true;
-    restartBtn.disabled = true;  // Ocultar el botón de reinicio
     requestAnimationFrame(scanQRCode);  // Reiniciar el escaneo
 }
