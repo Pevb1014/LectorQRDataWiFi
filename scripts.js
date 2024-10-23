@@ -1,11 +1,12 @@
 const inputQRFile = document.getElementById('InputCamera');
-const output = document.getElementById('output');
-const restartBtn = document.getElementById('restartBtn');
+const processButton = document.getElementById('processButton');
+const outputInfo = document.getElementById('outputInfo');
+
 
 let scanningActive = true; // Variable para controlar si la lectura está activa o no
 
-inputQRFile.addEventListener('change', (event) => {
-    const qrFile = event.target.files[0];
+processButton.addEventListener('click', () => {
+    const qrFile = inputQRFile.files[0];
     const reader = new FileReader();
     reader.onload = function(event) {
         let img = new Image();
@@ -22,9 +23,9 @@ inputQRFile.addEventListener('change', (event) => {
             let qrCode = jsQR(imageData.data, canvas.width, canvas.height);
             if (qrCode) {
 
-                output.textContent = getInfoWiFiQR(qrCode.data);
+                outputInfo.textContent = getInfoWiFiQR(qrCode.data);
             } else {
-                output.textContent = "No se detectó ningún código QR.";
+                outputInfo.textContent = "No se detectó ningún código QR.";
             }
         };
     };
