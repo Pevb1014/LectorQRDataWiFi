@@ -33,14 +33,14 @@ processButton.addEventListener('click', async () => {
         img.src = event.target.result;
 
         img.onload = function () {
-            document.body.removeChild(document.body.lastChild);
+            //document.body.removeChild(document.body.lastChild);
             let canvas = document.createElement('canvas');
             const scaleFactor = 2; // Puedes ajustar esto
             canvas.width = img.width / scaleFactor;
             canvas.height = img.height / scaleFactor;
             let context = canvas.getContext('2d');
             context.drawImage(img, 0, 0, canvas.width, canvas.height);
-            document.body.appendChild(canvas);
+            //document.body.appendChild(canvas);
             let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
             let qrCode = jsQR(imageData.data, canvas.width, canvas.height);
             
